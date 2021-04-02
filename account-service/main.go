@@ -16,7 +16,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-const dbsource = "postgresql://username:password@backend:5432/maindb?sslmode=disable"
+const dbsource = "postgresql://username:password@postgres:5432/maindb?sslmode=disable"
 
 func main() {
 	var httpAddr = flag.String("http", ":8080", "http listen address")
@@ -31,7 +31,7 @@ func main() {
 		)
 	}
 
-	level.Info(logger).Log("msg", "service started")
+	level.Info(logger).Log("msg", "service started!")
 	defer level.Info(logger).Log("msg", "service ended")
 
 	var db *sql.DB
@@ -42,8 +42,6 @@ func main() {
 		if err != nil {
 			level.Error(logger).Log("exit", err)
 			os.Exit(-1)
-		} else {
-			level.Info(logger).Log("connected")
 		}
 	}
 

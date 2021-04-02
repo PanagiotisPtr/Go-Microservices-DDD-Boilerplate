@@ -27,7 +27,7 @@ func (repo *repo) GetUser(ctx context.Context, id string) (string, error) {
 	err := repo.db.QueryRow(`SELECT email from users where id=$1`, id).Scan(&email)
 
 	if err != nil {
-		return "", RepoErr
+		return "", err
 	}
 
 	return email, nil
@@ -35,8 +35,6 @@ func (repo *repo) GetUser(ctx context.Context, id string) (string, error) {
 
 func (repo *repo) CreateUser(ctx context.Context, user User) error {
 	sql := `insert into users (id, email, password) values ($1, $2, $3)`
-
-	repo.logger.Log("QUERY: ", sql)
 
 	if user.Email == "" || user.Password == "" {
 		return RepoErr

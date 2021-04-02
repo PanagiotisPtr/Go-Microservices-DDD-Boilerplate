@@ -2,6 +2,17 @@ version: "3.4"
 
 services:
 
+  account-service:
+    build: ./account-service
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - backend
+    depends_on:
+      - pgAdmin
+      - postgres
+
   pgAdmin:
     restart: always
     image: dpage/pgadmin4
@@ -12,6 +23,10 @@ services:
       PGADMIN_DEFAULT_PASSWORD: password
     volumes:
       - pgadmin:/var/lib/pgadmin
+    networks:
+      - backend
+    depends_on:
+      - postgres
 
   postgres:
     image: postgres:13.2
@@ -24,7 +39,12 @@ services:
       - "5432:5432"
     volumes:
       - postgresdata:/var/lib/postgresql/data
+    networks:
+      - backend
 
 volumes:
   postgresdata:
   pgadmin:
+
+networks:
+  backend:

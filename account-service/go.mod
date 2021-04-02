@@ -1,4 +1,4 @@
-module gokit-tut
+module account-service
 
 go 1.13
 

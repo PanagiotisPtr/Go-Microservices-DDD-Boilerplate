@@ -1,11 +1,11 @@
 package main
 
 import (
+	"account-service/account"
 	"context"
 	"database/sql"
 	"flag"
 	"fmt"
-	"gokit-tut/account"
 	"net/http"
 	"os"
 	"os/signal"
@@ -16,7 +16,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-const dbsource = "postgresql://username:password@localhost:5432/maindb?sslmode=disable"
+const dbsource = "postgresql://username:password@backend:5432/maindb?sslmode=disable"
 
 func main() {
 	var httpAddr = flag.String("http", ":8080", "http listen address")
@@ -42,6 +42,8 @@ func main() {
 		if err != nil {
 			level.Error(logger).Log("exit", err)
 			os.Exit(-1)
+		} else {
+			level.Info(logger).Log("connected")
 		}
 	}
 

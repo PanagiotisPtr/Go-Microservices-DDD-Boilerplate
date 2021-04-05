@@ -1,0 +1,7 @@
+.DS_STORE
+
+account-service/config/*.yml
+!account-service/config/service.dist.yml
+
+config/*.env
+config/docker.dist.env

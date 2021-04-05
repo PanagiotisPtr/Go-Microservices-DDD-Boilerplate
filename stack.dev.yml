@@ -1,0 +1,32 @@
+version: '3.6'
+
+services:
+
+  pgAdmin:
+    restart: always
+    image: dpage/pgadmin4
+    ports:
+      - ${PGADMIN_PORT}
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    volumes:
+      - pgadmin_dev:/var/lib/pgadmin
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:13.2
+    restart: always
+    environment:
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    ports:
+      - ${DATABASE_PORT}
+    volumes:
+      - postgresdata_dev:/var/lib/postgresql/data
+
+volumes:
+  postgresdata_dev:
+  pgadmin_dev:

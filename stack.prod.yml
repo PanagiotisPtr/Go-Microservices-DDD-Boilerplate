@@ -1,0 +1,30 @@
+version: '3.6'
+
+services:
+
+  account-service:
+    build: ./account-service
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgres
+    environment:
+      PORT: ${ACCOUNT_SERVICE_PORT}
+      CONFIG_FILE: ${ACCOUNT_SERVICE_CONFIG_LOCATION}
+
+  postgres:
+    image: postgres:13.2
+    restart: always
+    environment:
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    ports:
+      - ${DATABASE_PORT}
+    volumes:
+      - postgresdata_prod:/var/lib/postgresql/data
+      - ./account-service/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  postgresdata_prod:

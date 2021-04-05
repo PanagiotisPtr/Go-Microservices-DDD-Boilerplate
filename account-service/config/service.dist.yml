@@ -1,0 +1,10 @@
+service:
+  port: "8080"
+
+database:
+  host: "database_host"
+  port: "5432"
+  name: "database_name"
+  username: "database_username"
+  password: "database_password"
+

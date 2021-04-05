@@ -1,10 +1,9 @@
 package main
 
 import (
-	"account-service/account"
+	"account-service/account/application"
 	"account-service/config"
 	"context"
-	"database/sql"
 	"flag"
 	"fmt"
 	"net/http"
@@ -52,30 +51,11 @@ func main() {
 		os.Exit(-1)
 	}
 
-	dbsource := "postgresql://" + config.Database.Username + ":" + config.Database.Password +
-		"@" + config.Database.Host + ":" + config.Database.Port +
-		"/" + config.Database.Name + "?sslmode=disable"
-
-	level.Info(logger).Log("msg", "service started!")
-	defer level.Info(logger).Log("msg", "service ended")
-
-	var db *sql.DB
-	{
-		var err error
-
-		db, err = sql.Open("postgres", dbsource)
-		if err != nil {
-			level.Error(logger).Log("exit", err)
-			os.Exit(-1)
-		}
-	}
+	level.Info(logger).Log("main", "Starting account service...")
+	defer level.Info(logger).Log("main", "Exited account service...")
 
 	ctx := context.Background()
-	var srv account.Service
-	{
-		repository := account.NewRepo(db, logger)
-		srv = account.NewService(repository, logger)
-	}
+	handler := application.Bootstrap(ctx, logger, config)
 
 	errs := make(chan error)
 
@@ -85,11 +65,8 @@ func main() {
 		errs <- fmt.Errorf("%s", <-c)
 	}()
 
-	endpoints := account.MakeEndpoints(srv)
-
 	go func() {
 		fmt.Println("Listening on port", config.Service.Port)
-		handler := account.NewHTTPServer(ctx, endpoints)
 		errs <- http.ListenAndServe(":"+config.Service.Port, handler)
 	}()
 

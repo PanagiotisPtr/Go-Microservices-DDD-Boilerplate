@@ -8,6 +8,8 @@ require (
 	github.com/go-stack/stack v1.8.0
 	github.com/gofrs/uuid v3.2.0+incompatible
 	github.com/gorilla/mux v1.7.3
-	github.com/lib/pq v1.2.0
+	github.com/lib/pq v1.3.0
 	github.com/spf13/viper v1.7.1 // indirect
+	gorm.io/driver/postgres v1.0.8 // indirect
+	gorm.io/gorm v1.21.6 // indirect
 )

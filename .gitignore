@@ -4,4 +4,4 @@ account-service/config/*.yml
 !account-service/config/service.dist.yml
 
 config/*.env
-config/docker.dist.env
+!config/docker.dist.env

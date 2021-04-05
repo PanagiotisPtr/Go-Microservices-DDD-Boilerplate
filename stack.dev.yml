@@ -26,6 +26,7 @@ services:
       - ${DATABASE_PORT}
     volumes:
       - postgresdata_dev:/var/lib/postgresql/data
+      - ./account-service/init.sql:/docker-entrypoint-initdb.d/init.sql
 
 volumes:
   postgresdata_dev:

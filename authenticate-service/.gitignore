@@ -1,0 +1,6 @@
+keys/*
+!keys/private.dist
+!keys/public.dist.pub
+
+config/*.yml
+!config/service.dist.yml

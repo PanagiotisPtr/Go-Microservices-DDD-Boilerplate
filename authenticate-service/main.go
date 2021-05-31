@@ -28,8 +28,9 @@ func main() {
 			"called", log.DefaultCaller,
 		)
 	}
-	configFilename := *flag.String("config", "./config/service.dev.yml", "configuration file")
+	configFileFlag := flag.String("config", "./config/service.dev.yml", "configuration file")
 	flag.Parse()
+	configFilename := *configFileFlag
 
 	if os.Getenv("CONFIG_FILE") != "" {
 		configFilename = os.Getenv("CONFIG_FILE")

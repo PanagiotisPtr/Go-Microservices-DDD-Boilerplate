@@ -1,6 +1,7 @@
 service:
   port: "8080"
-  secret: "secret_key"
+  publicKeyLocation: "public_key_file_location"
+  privateKeyLocation: "private_key_file_location"
 
 database:
   host: "database_host"

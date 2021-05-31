@@ -8,6 +8,8 @@ import (
 	"github.com/go-kit/kit/log"
 	"github.com/gofrs/uuid"
 
+	"errors"
+
 	"gorm.io/gorm"
 )
 
@@ -115,5 +117,9 @@ func (repo *UserRepository) UserExists(email string) (bool, error) {
 
 	result := repo.db.Scopes(entity.UserTable(user)).First(&user)
 
-	return result.RowsAffected > 0, result.Error
+	if !errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return false, result.Error
+	}
+
+	return result.RowsAffected > 0, nil
 }

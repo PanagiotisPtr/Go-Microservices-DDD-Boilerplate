@@ -36,7 +36,6 @@ func main() {
 		configFilename = os.Getenv("CONFIG_FILE")
 	}
 
-	fmt.Println(configFilename)
 	viper.SetConfigFile(configFilename)
 	viper.AddConfigPath(".")
 	var config config.Configuration

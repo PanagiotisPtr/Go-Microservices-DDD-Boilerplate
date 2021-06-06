@@ -47,11 +47,12 @@ func Bootstrap(ctx context.Context, logger log.Logger, configuration config.Conf
 
 	// Migrate all entities (only one in this case)
 	db.Scopes(entity.UserTable(entity.User{})).AutoMigrate(&entity.User{})
+	db.Scopes(entity.RefreshTokenTable(entity.RefreshToken{})).AutoMigrate(&entity.RefreshToken{})
 
 	jwtGenerator := generator.NewJwtGenerator(privateKey, publicKey)
 	userRepository := repository.NewUserRepository(db, logger)
 	refreshTokenRepository := repository.NewRefreshTokenRepository(db, logger)
-	accountService := service.NewUserService(
+	userService := service.NewUserService(
 		userRepository,
 		refreshTokenRepository,
 		logger,
@@ -60,7 +61,8 @@ func Bootstrap(ctx context.Context, logger log.Logger, configuration config.Conf
 
 	endpoints := make(map[string]endpoint.Endpoint)
 
-	endpoints["RegisterUserEndpoint"] = applicationEndpoints.RegisterUserEndpoint(accountService)
+	endpoints["RegisterUserEndpoint"] = applicationEndpoints.RegisterUserEndpoint(userService)
+	endpoints["AuthenticateEndpoint"] = applicationEndpoints.AuthenticateUserEndpoint(userService)
 
 	return server.NewHTTPServer(ctx, endpoints)
 }

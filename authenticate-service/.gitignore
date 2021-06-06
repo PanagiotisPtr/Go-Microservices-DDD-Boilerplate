@@ -4,3 +4,5 @@ keys/*
 
 config/*.yml
 !config/service.dist.yml
+
+.vscode

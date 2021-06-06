@@ -21,6 +21,12 @@ func NewHTTPServer(ctx context.Context, endpoints map[string]endpoint.Endpoint) 
 		response.EncodeRegisterUserResponse,
 	))
 
+	r.Methods("POST").Path("/authenticate").Handler(httptransport.NewServer(
+		endpoints["AuthenticateEndpoint"],
+		request.DecodeAuthenticateUserRequest,
+		response.EncodeAuthenticateUserResponse,
+	))
+
 	return r
 }
 

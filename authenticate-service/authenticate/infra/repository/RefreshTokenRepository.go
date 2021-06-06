@@ -40,10 +40,12 @@ func (repo *RefreshTokenRepository) CreateToken(userUuid string) (dto.RefreshTok
 		return refreshTokenEntityToDto(newToken), err
 	}
 
+	expiration := time.Now().Add(time.Hour * 24)
+
 	newToken = entity.RefreshToken{
 		Uuid:       tokenUuid.String(),
 		UserUuid:   userUuid,
-		Expiration: time.Now().Unix(),
+		Expiration: expiration.Unix(),
 	}
 
 	result := repo.db.Scopes(entity.RefreshTokenTable(newToken)).Create(&newToken)

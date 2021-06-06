@@ -117,7 +117,7 @@ func (repo *UserRepository) UserExists(email string) (bool, error) {
 
 	result := repo.db.Scopes(entity.UserTable(user)).First(&user)
 
-	if !errors.Is(result.Error, gorm.ErrRecordNotFound) {
+	if result.Error != nil && !errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return false, result.Error
 	}
 

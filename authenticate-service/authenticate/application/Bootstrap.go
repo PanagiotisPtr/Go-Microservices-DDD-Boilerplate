@@ -29,7 +29,7 @@ func Bootstrap(ctx context.Context, logger log.Logger, configuration config.Conf
 		os.Exit(-1)
 	}
 
-	publicKey, err := ioutil.ReadFile(configuration.Service.PrivateKeyLocation)
+	publicKey, err := ioutil.ReadFile(configuration.Service.PublicKeyLocation)
 	if err != nil {
 		level.Error(logger).Log("exit", err)
 		os.Exit(-1)

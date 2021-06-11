@@ -64,12 +64,12 @@ func (generator *JwtGenerator) ValidateToken(token string) (jwt.MapClaims, error
 		return claims, errors.New("Invalid token")
 	}
 
-	exp, ok := claims["exp"].(int64)
+	exp, ok := claims["exp"].(float64)
 	if !ok {
 		return claims, errors.New("Incorrect token structure")
 	}
 
-	if exp < time.Now().UTC().Unix() {
+	if int64(exp) < time.Now().UTC().Unix() {
 		return claims, errors.New("Token has expired")
 	}
 

@@ -2,14 +2,16 @@ package response
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"net/http"
 	"time"
 )
 
 type AuthenticateUserResponse struct {
-	Success bool   `json:"success"`
-	Token   string `json:"token"`
+	Success      bool   `json:"success"`
+	Token        string `json:"token"`
+	RefreshToken string `json:"-"` // important: keep this as '-'
 }
 
 func EncodeAuthenticateUserResponse(ctx context.Context, w http.ResponseWriter, response interface{}) error {
@@ -19,13 +21,13 @@ func EncodeAuthenticateUserResponse(ctx context.Context, w http.ResponseWriter, 
 		return errors.New("Response object could not be converted to AuthenticateUserResponse")
 	}
 
-	if authenticateUserResponse.Token == "" {
+	if authenticateUserResponse.RefreshToken == "" {
 		return errors.New("Response is missing refresh token")
 	}
 
 	cookie := http.Cookie{
 		Name:     "RefreshToken",
-		Value:    authenticateUserResponse.Token,
+		Value:    authenticateUserResponse.RefreshToken,
 		Path:     "/",
 		Expires:  time.Now().Add(time.Hour*24 - time.Second),
 		HttpOnly: true,
@@ -35,5 +37,5 @@ func EncodeAuthenticateUserResponse(ctx context.Context, w http.ResponseWriter, 
 
 	http.SetCookie(w, &cookie)
 
-	return nil
+	return json.NewEncoder(w).Encode(response)
 }

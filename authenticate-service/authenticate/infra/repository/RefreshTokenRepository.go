@@ -26,7 +26,7 @@ func NewRefreshTokenRepository(db *gorm.DB, logger log.Logger) irepository.IRefr
 
 func refreshTokenEntityToDto(etoken entity.RefreshToken) dto.RefreshTokenDto {
 	return dto.RefreshTokenDto{
-		Uuid:       etoken.UserUuid,
+		Uuid:       etoken.Uuid,
 		UserUuid:   etoken.UserUuid,
 		Expiration: etoken.Expiration,
 	}

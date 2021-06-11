@@ -27,6 +27,12 @@ func NewHTTPServer(ctx context.Context, endpoints map[string]endpoint.Endpoint) 
 		response.EncodeAuthenticateUserResponse,
 	))
 
+	r.Methods("GET").Path("/get_jwt").Handler(httptransport.NewServer(
+		endpoints["GetJwtEndpoint"],
+		request.DecodeGetJwtRequest,
+		response.EncodeGetJwtResponse,
+	))
+
 	return r
 }
 

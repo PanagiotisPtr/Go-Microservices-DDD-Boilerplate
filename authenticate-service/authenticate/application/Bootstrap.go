@@ -63,6 +63,7 @@ func Bootstrap(ctx context.Context, logger log.Logger, configuration config.Conf
 
 	endpoints["RegisterUserEndpoint"] = applicationEndpoints.RegisterUserEndpoint(userService)
 	endpoints["AuthenticateEndpoint"] = applicationEndpoints.AuthenticateUserEndpoint(userService)
+	endpoints["GetJwtEndpoint"] = applicationEndpoints.GetJwtEndpoint(userService)
 
 	return server.NewHTTPServer(ctx, endpoints)
 }

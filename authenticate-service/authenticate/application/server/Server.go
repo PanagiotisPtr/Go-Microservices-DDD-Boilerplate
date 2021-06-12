@@ -33,6 +33,12 @@ func NewHTTPServer(ctx context.Context, endpoints map[string]endpoint.Endpoint) 
 		response.EncodeGetJwtResponse,
 	))
 
+	r.Methods("POST").Path("/logout").Handler(httptransport.NewServer(
+		endpoints["LogoutUserEndpoint"],
+		request.DecodeLogoutUserRequest,
+		response.EncodeLogoutUserResponse,
+	))
+
 	return r
 }
 

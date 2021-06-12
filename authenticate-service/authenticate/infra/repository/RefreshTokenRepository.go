@@ -80,9 +80,10 @@ func (repo *RefreshTokenRepository) DeleteToken(uuid string) error {
 	return nil
 }
 
-func (repo *RefreshTokenRepository) RevokeUserTokens(userUuid string) error {
+func (repo *RefreshTokenRepository) RevokeUserTokens(refreshTokenUuid string) error {
 	var token entity.RefreshToken
-	token.UserUuid = userUuid
+	token.Uuid = refreshTokenUuid
+
 	result := repo.db.Scopes(entity.RefreshTokenTable(token)).Delete(&token)
 
 	if result.Error != nil {

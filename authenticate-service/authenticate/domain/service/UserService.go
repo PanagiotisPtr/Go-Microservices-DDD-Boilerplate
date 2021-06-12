@@ -144,10 +144,10 @@ func (s *UserService) RevokeRefreshTokensForUser(token string) error {
 		return err
 	}
 
-	userUuid, ok := claims["sub"].(string)
+	refreshTokenUuid, ok := claims["dat"].(string)
 	if !ok {
 		return errors.New("Missing user uuid in refresh token claims")
 	}
 
-	return s.refreshRepo.RevokeUserTokens(userUuid)
+	return s.refreshRepo.RevokeUserTokens(refreshTokenUuid)
 }

@@ -65,7 +65,7 @@ func (s *UserService) AuthenticateUser(email string, password string) (string, e
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 
 	tokenDto, err := s.refreshRepo.CreateToken(user.Uuid)
@@ -124,18 +124,53 @@ func (s *UserService) GetJWT(refreshToken string) (string, error) {
 	return newToken, nil
 }
 
+func (s *UserService) GetUserUuidFromToken(jwtToken string) (string, error) {
+	claims, err := s.tokenGenerator.ValidateToken(jwtToken)
+	if err != nil {
+		return "", err
+	}
+
+	userUuid, ok := claims["sub"].(string)
+
+	if ok == false {
+		return "", errors.New("JWT is missing the user uuid")
+	}
+
+	return userUuid, nil
+}
+
 func (s *UserService) VerifyUser(uuid string, code string) error {
 	// check if verification code is correct
 
 	return nil
 }
 
-func (s *UserService) UpdateUser(email string, newPassword string) error {
-	// authenticate user
-	// revoke their refresh tokens
-	// update their details
+func (s *UserService) UpdateUser(
+	userUuid string,
+	oldPassword string,
+	newPassword string,
+) error {
+	user, err := s.userRepo.GetUserByUuid(userUuid)
 
-	return nil
+	if err != nil {
+		return err
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(oldPassword))
+	if err != nil {
+		return err
+	}
+
+	hash, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+
+	user.Password = string(hash)
+
+	_, err = s.userRepo.UpdateUser(user)
+
+	return err
 }
 
 func (s *UserService) RevokeRefreshTokensForUser(token string) error {

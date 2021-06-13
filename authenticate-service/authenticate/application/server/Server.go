@@ -39,6 +39,12 @@ func NewHTTPServer(ctx context.Context, endpoints map[string]endpoint.Endpoint) 
 		response.EncodeLogoutUserResponse,
 	))
 
+	r.Methods("PUT").Path("/change_password").Handler(httptransport.NewServer(
+		endpoints["UpdateUserEndpoint"],
+		request.DecodeUpdateUserRequest,
+		response.EncodeUpdateUserResponse,
+	))
+
 	return r
 }
 

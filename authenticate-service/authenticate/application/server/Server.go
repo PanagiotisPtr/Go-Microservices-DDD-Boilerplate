@@ -1,8 +1,10 @@
 package server
 
 import (
+	applicationEndpoint "authenticate-service/authenticate/application/endpoint"
 	"authenticate-service/authenticate/application/message/request"
 	"authenticate-service/authenticate/application/message/response"
+	"authenticate-service/authenticate/application/middleware"
 	"context"
 	"net/http"
 
@@ -25,12 +27,34 @@ func NewHTTPServer(ctx context.Context, endpoints map[string]endpoint.Endpoint) 
 		endpoints["AuthenticateEndpoint"],
 		request.DecodeAuthenticateUserRequest,
 		response.EncodeAuthenticateUserResponse,
+		httptransport.ServerBefore(middleware.AddRequestOriginToContext),
+		httptransport.ServerAfter(middleware.AddResponseCorsOptions),
+		httptransport.ServerAfter(middleware.AddControlAllowCredentialsHeader),
+	))
+
+	r.Methods("OPTIONS").Path("/authenticate").Handler(httptransport.NewServer(
+		applicationEndpoint.OptionsEndpoint(),
+		request.DecodeOptionsRequest,
+		response.GetOptionsResponseEncoder("POST"),
+		httptransport.ServerBefore(middleware.AddRequestOriginToContext),
+		httptransport.ServerAfter(middleware.AddResponseCorsOptions),
 	))
 
 	r.Methods("GET").Path("/get_jwt").Handler(httptransport.NewServer(
 		endpoints["GetJwtEndpoint"],
 		request.DecodeGetJwtRequest,
 		response.EncodeGetJwtResponse,
+		httptransport.ServerBefore(middleware.AddRequestOriginToContext),
+		httptransport.ServerAfter(middleware.AddResponseCorsOptions),
+		httptransport.ServerAfter(middleware.AddControlAllowCredentialsHeader),
+	))
+
+	r.Methods("OPTIONS").Path("/get_jwt").Handler(httptransport.NewServer(
+		applicationEndpoint.OptionsEndpoint(),
+		request.DecodeOptionsRequest,
+		response.GetOptionsResponseEncoder("GET"),
+		httptransport.ServerBefore(middleware.AddRequestOriginToContext),
+		httptransport.ServerAfter(middleware.AddResponseCorsOptions),
 	))
 
 	r.Methods("POST").Path("/logout").Handler(httptransport.NewServer(

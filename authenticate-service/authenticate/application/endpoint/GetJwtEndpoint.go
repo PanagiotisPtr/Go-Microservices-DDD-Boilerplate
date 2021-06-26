@@ -16,11 +16,16 @@ func GetJwtEndpoint(s service.UserService) endpoint.Endpoint {
 			Token:   "",
 		}
 
-		requestObject := req.(request.GetJwtRequest)
+		requestObject, ok := req.(request.GetJwtRequest)
+
+		if !ok {
+			return errorResponse, nil
+		}
+
 		token, err := s.GetJWT(requestObject.RefreshToken)
 
 		if err != nil {
-			return errorResponse, err
+			return errorResponse, nil
 		}
 
 		return response.GetJwtResponse{

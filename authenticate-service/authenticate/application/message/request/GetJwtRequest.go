@@ -15,7 +15,7 @@ func DecodeGetJwtRequest(ctx context.Context, r *http.Request) (interface{}, err
 	cookie, err := r.Cookie("RefreshToken")
 
 	if err != nil {
-		return nil, err
+		return nil, nil
 	}
 
 	req.RefreshToken = cookie.Value

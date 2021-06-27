@@ -1,31 +1,45 @@
-import React, { useState } from 'react';
+import React from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Details from "./pages/Details";
 
 const App = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const loginAction = async (email, password) => {
-    const payload = { email, password };
-  
-    const response = await fetch('http://localhost:8080/authenticate', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    });
-  }
-
   return (
-    <div>
-      
-      <input onChange={e => setEmail(e.target.value)} type='text' placeholder='email' name='email'/>
-      <input onChange={e => setPassword(e.target.value)} type='password' placeholder='password' name='password'/>
+    <Router>
+      <div>
+        <nav>
+          <ul>
+            <li>
+              <Link to="/">Login</Link>
+            </li>
+            <li>
+              <Link to="/register">Register</Link>
+            </li>
+            <li>
+              <Link to="/details">Details</Link>
+            </li>
+          </ul>
+        </nav>
 
-      <button onClick={_ => loginAction(email, password)}>Login</button>
-
-    </div>
+        <Switch>
+          <Route path="/" exact={true}>
+            <Login />
+          </Route>
+          <Route path="/register">
+            <Register />
+          </Route>
+          <Route path="/details">
+            <Details />
+          </Route>
+        </Switch>
+      </div>
+    </Router>
   );
 }
 

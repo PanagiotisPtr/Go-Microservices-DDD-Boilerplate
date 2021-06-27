@@ -17,10 +17,20 @@ func NewHTTPServer(ctx context.Context, endpoints map[string]endpoint.Endpoint) 
 	r := mux.NewRouter()
 	r.Use(addJsonHeaders)
 
-	r.Methods("POST").Path("/user").Handler(httptransport.NewServer(
+	r.Methods("POST").Path("/register").Handler(httptransport.NewServer(
 		endpoints["RegisterUserEndpoint"],
 		request.DecodeRegisterUserRequest,
 		response.EncodeRegisterUserResponse,
+		httptransport.ServerBefore(middleware.AddRequestOriginToContext),
+		httptransport.ServerAfter(middleware.AddResponseCorsOptions),
+	))
+
+	r.Methods("OPTIONS").Path("/register").Handler(httptransport.NewServer(
+		applicationEndpoint.OptionsEndpoint(),
+		request.DecodeOptionsRequest,
+		response.GetOptionsResponseEncoder("POST"),
+		httptransport.ServerBefore(middleware.AddRequestOriginToContext),
+		httptransport.ServerAfter(middleware.AddResponseCorsOptions),
 	))
 
 	r.Methods("POST").Path("/authenticate").Handler(httptransport.NewServer(
@@ -61,12 +71,34 @@ func NewHTTPServer(ctx context.Context, endpoints map[string]endpoint.Endpoint) 
 		endpoints["LogoutUserEndpoint"],
 		request.DecodeLogoutUserRequest,
 		response.EncodeLogoutUserResponse,
+		httptransport.ServerBefore(middleware.AddRequestOriginToContext),
+		httptransport.ServerAfter(middleware.AddResponseCorsOptions),
+		httptransport.ServerAfter(middleware.AddControlAllowCredentialsHeader),
+	))
+
+	r.Methods("OPTIONS").Path("/logout").Handler(httptransport.NewServer(
+		applicationEndpoint.OptionsEndpoint(),
+		request.DecodeOptionsRequest,
+		response.GetOptionsResponseEncoder("POST"),
+		httptransport.ServerBefore(middleware.AddRequestOriginToContext),
+		httptransport.ServerAfter(middleware.AddResponseCorsOptions),
 	))
 
 	r.Methods("PUT").Path("/change_password").Handler(httptransport.NewServer(
 		endpoints["UpdateUserEndpoint"],
 		request.DecodeUpdateUserRequest,
 		response.EncodeUpdateUserResponse,
+		httptransport.ServerBefore(middleware.AddRequestOriginToContext),
+		httptransport.ServerAfter(middleware.AddResponseCorsOptions),
+		httptransport.ServerAfter(middleware.AddControlAllowCredentialsHeader),
+	))
+
+	r.Methods("OPTIONS").Path("/change_password").Handler(httptransport.NewServer(
+		applicationEndpoint.OptionsEndpoint(),
+		request.DecodeOptionsRequest,
+		response.GetOptionsResponseEncoder("PUT"),
+		httptransport.ServerBefore(middleware.AddRequestOriginToContext),
+		httptransport.ServerAfter(middleware.AddResponseCorsOptions),
 	))
 
 	return r

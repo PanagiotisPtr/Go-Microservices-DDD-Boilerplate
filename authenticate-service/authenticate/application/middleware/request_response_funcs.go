@@ -10,6 +10,9 @@ func AddRequestOriginToContext(ctx context.Context, r *http.Request) context.Con
 	return context.WithValue(ctx, "Origin", r.Header.Get("Origin"))
 }
 
+// AddResponseCorsOption adds the appropriate cors headers
+// to the request. For this to work correctly you will also
+// need to use the middleware.AddRequestOriginToContext
 func AddResponseCorsOptions(ctx context.Context, w http.ResponseWriter) context.Context {
 	origin, ok := ctx.Value("Origin").(string)
 
